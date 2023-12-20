@@ -1,46 +1,55 @@
-// import { Component, useEffect, useState } from 'react';
 import { ContactForm } from './ContactForm/ContactForm';
-import { nanoid } from 'nanoid';
 import { Contacts } from './Contacts/Contacts';
 import { SearchFilter } from './SearchFilter/SearchFilter';
-import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  createContactAction,
+  deleteContactAction,
+  setFilterAction,
+} from '../store/contactsSlice';
 
 export const App = () => {
-  const [contacts, setContacts] = useState([]);
-  const [filter, setFilter] = useState('');
+  const contacts = useSelector(state => state.contacts.contacts);
+  const filter = useSelector(state => state.contacts.filter);
 
-  useEffect(() => {
-    const contacts = JSON.parse(localStorage.getItem('ContactsData'));
-    if (contacts?.length) {
-      setContacts(contacts);
-    }
-  }, []);
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    localStorage.setItem('ContactsData', JSON.stringify(contacts));
-  }, [contacts]);
+  // useEffect(() => {
+  //   const contacts = JSON.parse(localStorage.getItem('ContactsData'));
+  //   if (contacts?.length) {
+  //     setContacts(contacts);
+  //   }
+  // }, []);
+
+  // useEffect(() => {
+  //   localStorage.setItem('ContactsData', JSON.stringify(contacts));
+  // }, [contacts]);
 
   const createContact = contact => {
-    const newContact = {
-      ...contact,
-      id: nanoid(),
-    };
+    // const newContact = {
+    //   ...contact,
+    //   id: nanoid(),
+    // };
     const isName = contacts.find(
-      contact => contact.name.toLowerCase() === newContact.name.toLowerCase()
+      item => item.name.toLowerCase() === contact.name.toLowerCase()
     );
     if (!isName) {
-      setContacts(prev => [...prev, newContact]);
+      // setContacts(prev => [...prev, newContact]);
+      dispatch(createContactAction(contact));
     } else {
-      alert(`${newContact.name} is already in contacts`);
+      alert(`${contact.name} is already in contacts`);
     }
   };
 
   const handleDeleteContact = contactId => {
-    setContacts(prev => prev.filter(contact => contact.id !== contactId));
+    // setContacts(prev => prev.filter(contact => contact.id !== contactId));
+    dispatch(deleteContactAction(contactId));
   };
 
   const handleSetFilter = e => {
-    setFilter(e.target.value);
+    // setFilter(e.target.value);
+
+    dispatch(setFilterAction(e.target.value));
   };
 
   const getFilteredContacts = () =>
