@@ -15,16 +15,15 @@ import storage from 'redux-persist/lib/storage'; // defaults to localStorage for
 const persistConfig = {
   key: 'contacts',
   storage,
+  blacklist: ['filter'],
 };
-
+const persistedReducer = persistReducer(persistConfig, contactsReduser);
 const reducer = combineReducers({
-  contacts: contactsReduser,
+  contacts: persistedReducer,
 });
 
-const persistedReducer = persistReducer(persistConfig, reducer);
-
 export const store = configureStore({
-  reducer: persistedReducer,
+  reducer,
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
       serializableCheck: {
